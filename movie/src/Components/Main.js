@@ -1,5 +1,19 @@
-import react from "react";
+import react, { useEffect, useState } from "react";
+import Card from "./Card";
+let API_key="&api_key=a5f53ed67a3d7097e29944b7ab1c376f";
+let base_url= "https://api.themoviedb.org/3";
+let url=base_url+'/discover/movie?sort_by=popularity.desc'+API_key;
 const Main = () => {
+  const [movieData, setData]=useState([]);
+  const [url_set, setUrl]=useState(url);
+  useEffect(()=>{
+    fetch(url_set).then(res=>res.json()).then(
+      data=>{
+        // console.log(data.results);
+        setData(data.results)
+      }
+    )
+  },[url_set])
   return <>
   <div className="header">
     <nav>
@@ -16,9 +30,18 @@ const Main = () => {
     <form>
         <div className="search-btn">
             <input type="text" placeholder="Enter Movie Name" className="inputText"></input>
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+           <i class="fa-solid fa-magnifying-glass"></i>
         </div>
     </form>
+  </div>
+  <div className="container">
+   {
+    (movieData.length==0)?<p className="notfound">Not Found</p>:movieData.map((res,pos)=>{
+      return(
+        <Card info={res} key={pos}/>
+      )
+    })
+   }
   </div>
   </>;
 };
